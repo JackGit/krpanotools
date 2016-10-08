@@ -4,7 +4,7 @@ var config = {
 };
 
 function makePreview (inputFile, options, onSuccess, onError) {
-  var cmd = spawn(config.krpanotoolsPath, ['makepreview', inputFile].concat(options || [])]);
+  var cmd = spawn(config.krpanotoolsPath, ['makepreview', inputFile].concat(options || []));
   cmd.on('close', function (code) {
     if (code === 0) {
       var previewPath = inputFile.substring(0, inputFile.lastIndexOf('.')) + '_preview.jpg';
