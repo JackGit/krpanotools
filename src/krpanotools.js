@@ -3,8 +3,13 @@ var config = {
   krpanotoolsPath: './krpanotools'
 };
 
+/**
+ * description: make a preview of a sphere image
+ * example:
+ *    makePreview('./test.jpg', '-cs')
+ */
 function makePreview (inputFile, options, onSuccess, onError) {
-  var cmd = spawn(config.krpanotoolsPath, ['makepreview', inputFile].concat(options || []));
+  var cmd = spawn(config.krpanotoolsPath, ['makepreview', inputFile].concat(options || ['-cs']));
   cmd.on('close', function (code) {
     if (code === 0) {
       var previewPath = inputFile.substring(0, inputFile.lastIndexOf('.')) + '_preview.jpg';
@@ -17,6 +22,7 @@ function makePreview (inputFile, options, onSuccess, onError) {
 }
 
 /**
+ * description: make a sphere image into tiles
  * example:
  *    makeTiles('./bigimage.jpg', 'tiles_%v_%h.jpg', 512)
  */
