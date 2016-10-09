@@ -45,7 +45,7 @@ function makeTiles (inputFile, outputFile, tileSize, options, onSuccess, onError
  */
 function makePano (inputFile, configFile, onSuccess, onError) {
     var configFilePath = configFile || config.krpanotoolsPath + '/templates/multires.config';
-    var cmd = spawn(config.krpanotoolsPath, ['makepano', '-config=' + configFilePath], inputFile);
+    var cmd = spawn(config.krpanotoolsPath, ['makepano', configFilePath, inputFile]);
     cmd.on('close', function (code) {
         if (code === 0) {
             onSuccess && onSuccess();
