@@ -1,6 +1,6 @@
 var spawn = require('child_process').spawn;
 var config = {
-  krpanotoolsPath: './krpanotools'
+  krpanotoolsPath: './krpanotools',
 };
 
 /**
@@ -38,8 +38,27 @@ function makeTiles (inputFile, outputFile, tileSize, options, onSuccess, onError
   });
 }
 
+/**
+ * description: make pano from a input image
+ * example:
+ *    makePano('./bigimage.jpg', null)
+ */
+function makePano (inputFile, configFile, onSuccess, onError) {
+    var configFilePath = configFile || config.krpanotoolsPath + '/templates/multires.config';
+    var cmd = spawn(config.krpanotoolsPath, ['makepano', '-config=' + configFilePath], inputFile);
+    cmd.on('close', function (code) {
+        if (code === 0) {
+            onSuccess && onSuccess();
+        } else {
+          console.warn('makePano exits with error, exit code is ' + code);
+          onError && onError(code);
+        }
+    });
+}
+
 module.exports = {
   config: config,
   makePreview: makePreview,
-  makeTiles: makeTiles
+  makeTiles: makeTiles,
+  makePano: makePano
 };
