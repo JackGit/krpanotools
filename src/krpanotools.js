@@ -41,7 +41,7 @@ function makeTiles (inputFile, outputFile, tileSize, options, onSuccess, onError
 /**
  * description: make pano from a input image
  * example:
- *    makePano('./bigimage.jpg', null)
+ *    makePano('./bigimage.jpg', './multires.config')
  */
 function makePano (inputFile, configFile, onSuccess, onError) {
     var configFilePath = configFile || config.krpanotoolsPath + '/templates/multires.config';
