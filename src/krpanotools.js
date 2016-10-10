@@ -113,8 +113,8 @@ function walkMakePanoResult (inputPath, onSuccess, onError) {
   fs.walk(inputPath).on('data', function (item) {
       var fileName = getFileName(item.path);
 
-      if (item.stat.isFile()) {
-        console.log('file:', path);
+      if (item.stats.isFile()) {
+        console.log('file:', item.path);
 
         if (fileName.indexOf('preview') !== -1) {
           imgs.push({
