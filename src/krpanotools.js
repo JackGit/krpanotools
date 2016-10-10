@@ -1,3 +1,5 @@
+var path = require('path');
+var fs = require('fs-extra');
 var spawn = require('child_process').spawn;
 var config = {
   krpanotoolsPath: './krpanotools',
@@ -56,9 +58,75 @@ function makePano (inputFile, configFile, onSuccess, onError) {
     });
 }
 
+/**
+ * l1_f_1_2
+ */
+function parseTileName (name) {
+  var info = {};
+  name.split('_').forEach(function (item, index) {
+    switch (index) {
+      case 0:
+        info.level = item.substring(1);
+        break;
+      case 1:
+        info.side = item;
+        break;
+      case 2:
+        info.v = item;
+        break;
+      case 3:
+        info.h = item;
+        break;
+      default:
+        break;
+    }
+  });
+  return info;
+}
+
+/**
+ * "/path/to/a/pano.jpg" => "pano"
+ */
+function getFileName (filePath) {
+  return path.basename(filePath, '.jpg');
+}
+
+function walkMakePanoResult (inputPath, onSuccess, onError) {
+  var imgs = [{
+    path: '',
+    preview: false,
+    mobile: '', // side label
+    multires: {
+      level: 1,
+      side: 'f',
+      v: 1,
+      h: 2
+    }
+  }];
+
+  fs.walk(path)
+    .on('data', function (item) {
+      var path = item.path;
+      var stat = item.stat;
+
+      if (stat.isFile()) {
+        console.log('file:', path);
+      }
+
+      if (state.isDirectory()) {
+        console.log('folder:', path);
+      }
+    })
+    .on('end', function () {
+      console.log('end');
+      onSuccess && onSuccess(imgs);
+    });
+}
+
 module.exports = {
   config: config,
   makePreview: makePreview,
   makeTiles: makeTiles,
-  makePano: makePano
+  makePano: makePano,
+  walkMakePanoResult: walkMakePanoResult
 };
