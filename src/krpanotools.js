@@ -62,7 +62,13 @@ function makePano (inputFile, configFile, onSuccess, onError) {
  * l1_f_1_2
  */
 function parseTileName (name) {
-  var info = {};
+  var info = {
+    level: '',
+    side: '',
+    v: 0,
+    h: 0
+  };
+
   name.split('_').forEach(function (item, index) {
     switch (index) {
       case 0:
@@ -92,32 +98,50 @@ function getFileName (filePath) {
 }
 
 function walkMakePanoResult (inputPath, onSuccess, onError) {
-  var imgs = [{
+  var imgs = [/*{
     path: '',
     preview: false,
     mobile: '', // side label
     multires: {
-      level: 1,
+      level: '',
       side: 'f',
       v: 1,
       h: 2
     }
-  }];
+  }*/];
 
-  fs.walk(path)
-    .on('data', function (item) {
-      var path = item.path;
-      var stat = item.stat;
+  fs.walk(path).on('data', function (item) {
+      var fileName = getFileName(item.path);
 
-      if (stat.isFile()) {
+      if (item.stat.isFile()) {
         console.log('file:', path);
-      }
 
-      if (state.isDirectory()) {
-        console.log('folder:', path);
+        if (fileName.indexOf('preview') !== -1) {
+          imgs.push({
+            path: item.path,
+            preview: true,
+            mobile: '',
+            multires: null
+          });
+        } else if (fileName.indexOf('mobile_') !== -1) {
+          imgs.push({
+            path: item.path,
+            preview: false,
+            mobile: fileName[7],
+            multires: null
+          });
+        } else if (fileName.startsWith('l')) {
+          imgs.push({
+            path: item.path,
+            preview: false,
+            mobile: '',
+            multires: parseTileName(fileName)
+          });
+        } else {
+          console.warn('walkMakePanoResult() cannot process file', fileName);
+        }
       }
-    })
-    .on('end', function () {
+    }).on('end', function () {
       console.log('end');
       onSuccess && onSuccess(imgs);
     });
