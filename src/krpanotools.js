@@ -147,10 +147,31 @@ function walkMakePanoResult (inputPath, onSuccess, onError) {
     });
 }
 
+function createUploadKey (prefix, id, image) {
+    var key = prefix + '/' + id + '/imgs'; // /resources/prod/XXXX
+
+    if (image.preview) {
+      key += '/preview.jpg';
+    } else if (image.mobile) {
+      key += '/mobile/mobile_' + image.mobile + '.jpg';
+    } else if (image.multires) {
+      key += '/mres_'
+              + image.multires.side
+              + '/l' + image.multires.level
+              + '/' + image.multires.v
+              + '/l' + image.multires.level + '_' + image.multires.side + '_' + image.multires.v + '_' + image.multires.h + '.jpg';
+    } else {
+      console.warn('createUploadKey() cannot process image', image);
+    }
+
+    return key;
+}
+
 module.exports = {
   config: config,
   makePreview: makePreview,
   makeTiles: makeTiles,
   makePano: makePano,
-  walkMakePanoResult: walkMakePanoResult
+  walkMakePanoResult: walkMakePanoResult,
+  createUploadKey: createUploadKey
 };
