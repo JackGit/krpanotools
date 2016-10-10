@@ -110,7 +110,7 @@ function walkMakePanoResult (inputPath, onSuccess, onError) {
     }
   }*/];
 
-  fs.walk(path).on('data', function (item) {
+  fs.walk(inputPath).on('data', function (item) {
       var fileName = getFileName(item.path);
 
       if (item.stat.isFile()) {
